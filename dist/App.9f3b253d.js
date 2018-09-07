@@ -22741,7 +22741,65 @@ var Carousel = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Carousel;
-},{"react":"../node_modules/react/index.js"}],"Detail.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js"}],"Modal.js":[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var modalRoot = document.getElementById("modal");
+
+var Modal = function (_React$Component) {
+  _inherits(Modal, _React$Component);
+
+  function Modal(props) {
+    _classCallCheck(this, Modal);
+
+    var _this = _possibleConstructorReturn(this, (Modal.__proto__ || Object.getPrototypeOf(Modal)).call(this, props));
+
+    _this.el = document.createElement("div");
+    return _this;
+  }
+
+  _createClass(Modal, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      modalRoot.appendChild(this.el);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      modalRoot.removeChild(this.el);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return (0, _reactDom.createPortal)(this.props.children, this.el);
+    }
+  }]);
+
+  return Modal;
+}(_react2.default.Component);
+
+exports.default = Modal;
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js"}],"Detail.js":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22763,6 +22821,10 @@ var _router = require('@reach/router');
 var _Carousel = require('./Carousel');
 
 var _Carousel2 = _interopRequireDefault(_Carousel);
+
+var _Modal = require('./Modal');
+
+var _Modal2 = _interopRequireDefault(_Modal);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22792,7 +22854,10 @@ var Details = function (_React$Component) {
         }
 
         return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Details.__proto__ || Object.getPrototypeOf(Details)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-            loading: true
+            loading: true,
+            showModal: true
+        }, _this.toggleModal = function () {
+            return _this.setState({ showModal: !_this.state.showModal });
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
@@ -22843,7 +22908,8 @@ var Details = function (_React$Component) {
                 breed = _state.breed,
                 location = _state.location,
                 description = _state.description,
-                media = _state.media;
+                media = _state.media,
+                showModal = _state.showModal;
 
             return _react2.default.createElement(
                 'div',
@@ -22867,10 +22933,41 @@ var Details = function (_React$Component) {
                         location
                     ),
                     _react2.default.createElement(
+                        'button',
+                        { onClick: this.toggleModal },
+                        'Adopt ',
+                        name
+                    ),
+                    _react2.default.createElement(
                         'p',
                         null,
                         description
-                    )
+                    ),
+                    showModal ? _react2.default.createElement(
+                        _Modal2.default,
+                        null,
+                        _react2.default.createElement(
+                            'h1',
+                            null,
+                            'Would you like to adopt ',
+                            name,
+                            '?'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'buttons' },
+                            _react2.default.createElement(
+                                'button',
+                                { onClick: this.toggleModal },
+                                'Yes'
+                            ),
+                            _react2.default.createElement(
+                                'button',
+                                { onClick: this.toggleModal },
+                                'Defintely Yes'
+                            )
+                        )
+                    ) : null
                 )
             );
         }
@@ -22887,7 +22984,7 @@ exports.default = Details;
 //         loading:true
 //     }
 // }
-},{"react":"../node_modules/react/index.js","petfinder-client":"../node_modules/petfinder-client/index.js","@reach/router":"../node_modules/@reach/router/es/index.js","./Carousel":"Carousel.js"}],"SearchParams.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","petfinder-client":"../node_modules/petfinder-client/index.js","@reach/router":"../node_modules/@reach/router/es/index.js","./Carousel":"Carousel.js","./Modal":"Modal.js"}],"SearchParams.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -23057,6 +23154,15 @@ var App = function (_React$Component) {
                         _router.Link,
                         { to: "/" },
                         "Adopt Me!"
+                    ),
+                    _react2.default.createElement(
+                        _router.Link,
+                        { to: "/search-params" },
+                        _react2.default.createElement(
+                            "span",
+                            { "arial-label": "search", role: "img" },
+                            "\uD83D\uDD0E"
+                        )
                     )
                 ),
                 _react2.default.createElement(
@@ -23137,7 +23243,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '52631' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '54212' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
