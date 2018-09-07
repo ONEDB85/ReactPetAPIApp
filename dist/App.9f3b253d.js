@@ -22519,7 +22519,7 @@ exports.default = SearchBox;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -22555,97 +22555,91 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var petfinder = (0, _petfinderClient2.default)({
-    key: "3f36ed773da413b044b6e8fff73a324c",
-    secret: "338bc1b781abc1f3fd63d83b7d009e3e"
+  key: "3f36ed773da413b044b6e8fff73a324c",
+  secret: "338bc1b781abc1f3fd63d83b7d009e3e"
 });
 
 var Results = function (_React$Component) {
-    _inherits(Results, _React$Component);
+  _inherits(Results, _React$Component);
 
-    function Results(props) {
-        _classCallCheck(this, Results);
+  function Results(props) {
+    _classCallCheck(this, Results);
 
-        var _this = _possibleConstructorReturn(this, (Results.__proto__ || Object.getPrototypeOf(Results)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (Results.__proto__ || Object.getPrototypeOf(Results)).call(this, props));
 
-        _this.state = {
-            pets: []
-        };
-        return _this;
+    _this.search = function () {
+      petfinder.pet.find({
+        location: _this.props.searchParams.location,
+        animal: _this.props.searchParams.animal,
+        breed: _this.props.searchParams.breed,
+        output: "full"
+      }).then(function (data) {
+        var pets = void 0;
+        if (data.petfinder.pets && data.petfinder.pets.pet) {
+          if (Array.isArray(data.petfinder.pets.pet)) {
+            pets = data.petfinder.pets.pet;
+          } else {
+            pets = [data.petfinder.pets.pet];
+          }
+        } else {
+          pets = [];
+        }
+        _this.setState({
+          pets: pets
+        });
+      });
+    };
+
+    _this.state = {
+      pets: []
+    };
+    return _this;
+  }
+
+  _createClass(Results, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.search();
     }
+  }, {
+    key: "render",
+    value: function render() {
+      return _react2.default.createElement(
+        "div",
+        { className: "search" },
+        _react2.default.createElement(_SearchBox2.default, { search: this.search }),
+        this.state.pets.map(function (pet) {
+          var breed = void 0;
+          if (Array.isArray(pet.breeds.breed)) {
+            breed = pet.breeds.breed.join(", ");
+          } else {
+            breed = pet.breeds.breed;
+          }
+          return _react2.default.createElement(_Pet2.default, {
+            animal: pet.animal,
+            key: pet.id,
+            name: pet.name,
+            breed: breed,
+            media: pet.media,
+            location: pet.contact.city + ", " + pet.contact.state,
+            id: pet.id
+          });
+        })
+      );
+    }
+  }]);
 
-    _createClass(Results, [{
-        key: "componentDidMount",
-        value: function componentDidMount() {
-            this.search();
-        }
-    }, {
-        key: "search",
-        value: function search() {
-            var _this2 = this;
-
-            petfinder.pet.find({
-                output: "full",
-                location: this.props.searchParams.location,
-                animal: this.props.searchParams.animal,
-                breed: this.props.searchParams.breed
-            }).then(function (data) {
-                var pets = void 0;
-                if (data.petfinder.pets && data.petfinder.pets.pet) {
-                    if (Array.isArray(data.petfinder.pets.pet)) {
-                        pets = data.petfinder.pets.pet;
-                    } else {
-                        pets = [data.petfinder.pets.pet];
-                    }
-                } else {
-                    pets = [];
-                }
-
-                _this2.setState({
-                    pets: pets
-                });
-            });
-        }
-    }, {
-        key: "render",
-        value: function render() {
-            return _react2.default.createElement(
-                "div",
-                { className: "search" },
-                _react2.default.createElement(_SearchBox2.default, { search: this.search }),
-                this.state.pets.map(function (pet) {
-                    var breed = void 0;
-                    if (Array.isArray(pet.breeds.breed)) {
-                        breed = pet.breeds.breed.join(", ");
-                    } else {
-                        breed = pet.breeds.breed;
-                    }
-
-                    return _react2.default.createElement(_Pet2.default, {
-                        key: pet.id,
-                        animal: pet.animal,
-                        name: pet.name,
-                        breed: breed,
-                        media: pet.media,
-                        location: pet.contact.city + ", " + pet.contact.state,
-                        id: pet.id
-
-                    });
-                })
-            );
-        }
-    }]);
-
-    return Results;
+  return Results;
 }(_react2.default.Component);
 
 function ResultsWithContext(props) {
-    return _react2.default.createElement(
-        _SearchContext.Consumer,
-        null,
-        function (context) {
-            return _react2.default.createElement(Results, _extends({}, props, { searchParams: context }));
-        }
-    );
+  return _react2.default.createElement(
+    _SearchContext.Consumer,
+    null,
+    function (context) {
+      return _react2.default.createElement(Results, _extends({}, props, { searchParams: context }));
+    }
+  );
 }
 },{"react":"../node_modules/react/index.js","petfinder-client":"../node_modules/petfinder-client/index.js","./Pet":"Pet.js","./SearchBox":"SearchBox.js","./SearchContext":"SearchContext.js"}],"Carousel.js":[function(require,module,exports) {
 'use strict';
@@ -23143,7 +23137,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '64662' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '52631' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
